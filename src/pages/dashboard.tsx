@@ -9,6 +9,17 @@ import { signOut } from 'next-auth/react'
 import Map, { MapRef, Marker } from 'react-map-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { getImageFiles } from '@/utils/slides'
+import { 
+  getFormattedDate, 
+  getCoupleNames, 
+  getMapCoordinates,
+  getWeddingEvents,
+  getSocialMediaLinks,
+  getContactInfo,
+  getBankingInfo,
+  getMapConfig
+} from '@/utils/weddingHelpers'
+import uiConfig from '@/data/ui'
 import useEmblaCarousel from 'embla-carousel-react'
 import { prisma } from '../prisma'
 import { useForm } from 'react-hook-form'
@@ -57,13 +68,13 @@ const Dashboard: NextPage<any> = ({ rsvps, gifts, slides }) => {
   const handleZoom = () => {
     if (!zoomed) {
       mapRef.current?.flyTo({
-        center: [parseFloat(process.env.NEXT_PUBLIC_MAP_COORDS.split(',')[1]), parseFloat(process.env.NEXT_PUBLIC_MAP_COORDS.split(',')[0])],
+        center: mapCoords.mapCenter,
         zoom: 9,
         duration: 1000,
       })
     } else {
       mapRef.current?.flyTo({
-        center: [parseFloat(process.env.NEXT_PUBLIC_COUNTRY_COORDS.split(',')[1]), parseFloat(process.env.NEXT_PUBLIC_COUNTRY_COORDS.split(',')[0])],
+        center: mapCoords.country,
         zoom: 3.5,
         duration: 1000,
       })
@@ -74,11 +85,14 @@ const Dashboard: NextPage<any> = ({ rsvps, gifts, slides }) => {
   const [countdown, setCountdown] = useState('Countdown')
   const [smallCountdown, setSmallCountdown] = useState('Countdown')
 
-  const weddingDate = new Date(process.env.NEXT_PUBLIC_DATE)
-  const formattedDate = weddingDate.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }).toLowerCase()
-  const formattedDayNum = weddingDate.toLocaleDateString('en-GB', { day: 'numeric' })
-  const formattedDay = weddingDate.toLocaleDateString('en-GB', { weekday: 'long' }).toLowerCase()
-  const formattedTime = (parseInt(weddingDate.toLocaleTimeString('en-GB', { hour: 'numeric' })) % 12 || 12) + " o'clock"
+  const dateInfo = getFormattedDate()
+  const coupleNames = getCoupleNames()
+  const mapCoords = getMapCoordinates()
+  const weddingEvents = getWeddingEvents()
+  const socialMedia = getSocialMediaLinks()
+  const contactInfo = getContactInfo()
+  const bankingInfo = getBankingInfo()
+  const mapConfig = getMapConfig()
 
   const [index, setIndex] = useState(0)
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, skipSnaps: true, startIndex: index })
@@ -201,7 +215,7 @@ const Dashboard: NextPage<any> = ({ rsvps, gifts, slides }) => {
   }, [emblaModalApi, onSettleModal])
 
   useEffect(() => {
-    const targetDate = weddingDate.getTime()
+    const targetDate = dateInfo.timestamp
 
     const interval = setInterval(() => {
       const now = new Date().getTime()
@@ -277,14 +291,14 @@ const Dashboard: NextPage<any> = ({ rsvps, gifts, slides }) => {
             className='flex flex-wrap justify-center font-display font-medium text-xl text-center tracking-wider mb-10 mt-[-0.9em] mx-8 px-4 space-x-2 bg-base-100'
           >
             <div className='flex flex-row whitespace-nowrap space-x-2'>
-              <span>emily</span>
-              <span className='hidden sm:block'>yap</span>
-              <span className='hidden md:block'>juet yen</span>
+              <span>{coupleNames.brideWithSubtitle.first}</span>
+              <span className='hidden sm:block'>{coupleNames.brideWithSubtitle.subtitle}</span>
+              <span className='hidden md:block'>{coupleNames.brideWithSubtitle.surname}</span>
             </div>
             <div>•</div>
             <div className='flex flex-row whitespace-nowrap space-x-2'>
-              <span>joshua</span> <span className='hidden md:block'>james</span>
-              <span className='hidden sm:block'>soong</span>
+              <span>{coupleNames.groomWithSubtitle.first}</span> <span className='hidden md:block'>{coupleNames.groomWithSubtitle.subtitle}</span>
+              <span className='hidden sm:block'>{coupleNames.groomWithSubtitle.surname}</span>
             </div>
           </motion.div>
           <motion.h1
@@ -419,11 +433,11 @@ const Dashboard: NextPage<any> = ({ rsvps, gifts, slides }) => {
                 <Map
                   ref={mapRef}
                   reuseMaps
-                  mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+                  mapboxAccessToken={mapConfig.accessToken}
                   mapLib={import('mapbox-gl')}
                   initialViewState={{
-                    latitude: parseFloat(process.env.NEXT_PUBLIC_COUNTRY_COORDS.split(',')[0]),
-                    longitude: parseFloat(process.env.NEXT_PUBLIC_COUNTRY_COORDS.split(',')[1]),
+                    latitude: mapCoords.country[1],
+                    longitude: mapCoords.country[0],
                     zoom: 3.5,
                   }}
                   style={{ display: 'flex', flex: 1, alignContent: 'right', borderTopLeftRadius: '1rem', borderTopRightRadius: '1rem' }}
@@ -433,8 +447,8 @@ const Dashboard: NextPage<any> = ({ rsvps, gifts, slides }) => {
                 >
                   <Marker
                     color='#31553d'
-                    latitude={parseFloat(process.env.NEXT_PUBLIC_MARKER_COORDS.split(',')[0])}
-                    longitude={parseFloat(process.env.NEXT_PUBLIC_MARKER_COORDS.split(',')[1])}
+                    latitude={mapCoords.venue[1]}
+                    longitude={mapCoords.venue[0]}
                     anchor='bottom'
                   ></Marker>
                   <label className='btn btn-circle absolute top-0 right-0 m-2 btn-neutral swap swap-rotate'>
@@ -449,18 +463,18 @@ const Dashboard: NextPage<any> = ({ rsvps, gifts, slides }) => {
                 </Map>
                 <div>
                   <h2 className='mx-5 pt-5 justify-center font-medium text-xl text-center tracking-wide'>
-                    {process.env.NEXT_PUBLIC_VENUE.toLowerCase()}
+                    {weddingEvents.venue.name.toLowerCase()}
                     <span className='hidden sm:inline'> • </span>
                     <br className='sm:hidden'></br>
-                    {process.env.NEXT_PUBLIC_LOCATION.toLowerCase()}
+                    {weddingEvents.venue.location.toLowerCase()}
                   </h2>
                   <p className='mx-5 mb-5 justify-center font-medium text-xl text-center tracking-wide'>
-                    {formattedDayNum}
+                    {dateInfo.dayNumber}
                     <sup>Þ </sup>
-                    {formattedDate}
+                    {dateInfo.monthYear}
                     <span className='hidden sm:inline'> • </span>
                     <br className='sm:hidden' />
-                    {formattedDay + ' ' + formattedTime}
+                    {dateInfo.weekday + ' ' + dateInfo.time}
                   </p>
                 </div>
               </motion.div>
@@ -478,7 +492,7 @@ const Dashboard: NextPage<any> = ({ rsvps, gifts, slides }) => {
                     <div className='collapse-title text-xl font-medium'>Format</div>
                     <div className='collapse-content'>
                       <p className='text-center text-sm sm:text-base text-neutral'>
-                        Ceremony → Refreshments →{' '}
+                        {weddingEvents.ceremony.description}{' '}
                         <span className='whitespace-nowrap'>
                           Cake & Coffee → Photos{session.user.dinner && <span className='text-secondary'> → Dinner</span>}
                         </span>{' '}
@@ -490,7 +504,7 @@ const Dashboard: NextPage<any> = ({ rsvps, gifts, slides }) => {
                     <div className='collapse-title text-xl font-medium'>Alcohol</div>
                     <div className='collapse-content'>
                       <p className='text-sm sm:text-base text-neutral'>
-                        We're having an alcohol-free wedding! Non-alcoholic refreshments will be available after the ceremony.
+                        {weddingEvents.ceremony.refreshmentsNote}
                       </p>
                     </div>
                   </div>
@@ -516,9 +530,9 @@ const Dashboard: NextPage<any> = ({ rsvps, gifts, slides }) => {
                       <div className='collapse-title text-xl font-medium text-secondary'>Dinner</div>
                       <div className='collapse-content'>
                         <p className='text-center md:text-left text-sm sm:text-base text-neutral'>
-                          You're invited to our exclusive <span className='whitespace-nowrap'>family-&-friends reception dinner!</span>
+                          You're invited to our {weddingEvents.reception.description}!
                           <br />
-                          <b>6:30pm in The Barn @ {process.env.NEXT_PUBLIC_VENUE}</b>
+                          <b>{weddingEvents.ceremony.time} in {weddingEvents.reception.venue} @ {weddingEvents.venue.name}</b>
                           <br />
                           Please let us know if you have any dietary requirements.
                         </p>
@@ -531,10 +545,10 @@ const Dashboard: NextPage<any> = ({ rsvps, gifts, slides }) => {
                     <div className='collapse-content'>
                       <div className='text-sm sm:text-base text-neutral'>
                         Just DM one of us (
-                        <div className='tooltip' data-tip='josh'>
+                        <div className='tooltip' data-tip={contactInfo.tooltips.brideFacebook}>
                           <a
                             className='link link-primary'
-                            href={process.env.NEXT_PUBLIC_FB_LINKS.split(' ')[0]}
+                            href={socialMedia.facebook.bride}
                             target='_blank'
                             rel='noopener noreferrer'
                           >
@@ -542,10 +556,10 @@ const Dashboard: NextPage<any> = ({ rsvps, gifts, slides }) => {
                           </a>
                         </div>
                         •
-                        <div className='tooltip' data-tip='em'>
+                        <div className='tooltip' data-tip={contactInfo.tooltips.groomFacebook}>
                           <a
                             className='link link-primary'
-                            href={process.env.NEXT_PUBLIC_FB_LINKS.split(' ')[1]}
+                            href={socialMedia.facebook.groom}
                             target='_blank'
                             rel='noopener noreferrer'
                           >
@@ -553,10 +567,10 @@ const Dashboard: NextPage<any> = ({ rsvps, gifts, slides }) => {
                           </a>
                         </div>{' '}
                         or{' '}
-                        <div className='tooltip' data-tip='josh'>
+                        <div className='tooltip' data-tip={contactInfo.tooltips.brideInstagram}>
                           <a
                             className='link link-primary'
-                            href={process.env.NEXT_PUBLIC_INSTA_LINKS.split(' ')[0]}
+                            href={socialMedia.instagram.bride}
                             target='_blank'
                             rel='noopener noreferrer'
                           >
@@ -564,10 +578,10 @@ const Dashboard: NextPage<any> = ({ rsvps, gifts, slides }) => {
                           </a>
                         </div>
                         •
-                        <div className='tooltip' data-tip='em'>
+                        <div className='tooltip' data-tip={contactInfo.tooltips.groomInstagram}>
                           <a
                             className='link link-primary'
-                            href={process.env.NEXT_PUBLIC_INSTA_LINKS.split(' ')[1]}
+                            href={socialMedia.instagram.groom}
                             target='_blank'
                             rel='noopener noreferrer'
                           >
@@ -575,8 +589,8 @@ const Dashboard: NextPage<any> = ({ rsvps, gifts, slides }) => {
                           </a>
                         </div>
                         ), or{' '}
-                        <div className='tooltip' data-tip='us@korora.wedding'>
-                          <a className='link link-primary' href={'mailto:' + process.env.NEXT_PUBLIC_EMAIL} target='_blank' rel='noopener noreferrer'>
+                        <div className='tooltip' data-tip={contactInfo.emailTooltip}>
+                          <a className='link link-primary' href={'mailto:' + contactInfo.email} target='_blank' rel='noopener noreferrer'>
                             email
                           </a>
                         </div>{' '}
@@ -706,7 +720,7 @@ const Dashboard: NextPage<any> = ({ rsvps, gifts, slides }) => {
                 className='flex justify-center items-center max-w-[700px] w-[85vw] min-w-[296px] bg-base-200 text-accent rounded-2xl xl-shadow'
               >
                 <div className='font-medium text-xl text-center tracking-wide p-10'>
-                  <span className='text-neutral'>Your presence at our wedding is more than enough!</span>
+                  <span className='text-neutral'>{bankingInfo.giftMessage}</span>
                   <br />
                   <br />
                   If you'd like to help us celebrate with a gift, we've set up a few funds to help us get started in our new life together:
@@ -714,20 +728,20 @@ const Dashboard: NextPage<any> = ({ rsvps, gifts, slides }) => {
                     <div className='grid h-32 min-w-[60%] w-64 card bg-base-300 rounded-box place-items-center md:flex-1 md:min-w-0'>
                       <p className='text-neutral h-1'>home & living</p>
                       <p className='text-sm'>
-                        {process.env.NEXT_PUBLIC_FUND}-<span className='text-secondary'>003</span> <br />
-                        Joshua Soong
+                        {bankingInfo.funds[0].accountNumber} <br />
+                        {bankingInfo.accountName}
                       </p>
                     </div>
                     <div className='divider before:bg-accent after:bg-accent md:divider-horizontal' />
                     <div className='grid h-32 min-w-[60%] w-64 card bg-base-300 rounded-box place-items-center md:flex-1 md:min-w-0'>
                       <p className='text-neutral h-1'>honeymoon</p>
                       <p className='text-sm'>
-                        {process.env.NEXT_PUBLIC_FUND}-<span className='text-secondary'>004</span> <br />
-                        Joshua Soong
+                        {bankingInfo.funds[1].accountNumber} <br />
+                        {bankingInfo.accountName}
                       </p>
                     </div>
                   </div>
-                  We'll also have a <span className='text-secondary'>wishing well</span> and table set up at the wedding if you'd like to give us a
+                  {bankingInfo.hasWishingWell && <>We'll also have a <span className='text-secondary'>wishing well</span> and table set up at the wedding if you'd like to give us a</>}
                   card or gift in person.
                 </div>
               </motion.div>
