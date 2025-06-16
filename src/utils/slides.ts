@@ -1,14 +1,35 @@
-import image1 from '../../public/images/1.jpg'
-import image2 from '../../public/images/2.jpg'
-import image3 from '../../public/images/3.jpg'
-import image4 from '../../public/images/4.jpg'
-import image5 from '../../public/images/5.jpg'
-import image6 from '../../public/images/6.jpg'
-import image7 from '../../public/images/7.jpg'
-import image8 from '../../public/images/8.jpg'
-import image9 from '../../public/images/9.jpg'
+import fs from 'fs'
+import path from 'path'
 
-const slides = [image1, image2, image3, image4, image5, image6, image7, image8, image9]
+// Function to get all image files from public/images directory (server-side only)
+export function getImageFiles() {
+  try {
+    const imagesDirectory = path.join(process.cwd(), 'public', 'images')
+    const filenames = fs.readdirSync(imagesDirectory)
+    
+    // Filter for image files (jpg, jpeg, png, webp, gif)
+    const imageFiles = filenames.filter(name => {
+      const ext = path.extname(name).toLowerCase()
+      return ['.jpg', '.jpeg', '.png', '.webp', '.gif'].includes(ext)
+    })
+    
+    // Sort files naturally (1.jpg, 2.jpg, 10.jpg, etc.)
+    imageFiles.sort((a, b) => {
+      const numA = parseInt(a.match(/\d+/)?.[0] || '999')
+      const numB = parseInt(b.match(/\d+/)?.[0] || '999')
+      return numA - numB || a.localeCompare(b)
+    })
+    
+    return imageFiles.map(filename => `/images/${filename}`)
+  } catch (error) {
+    console.warn('Could not read images directory:', error)
+    // Fallback to numbered files if directory read fails
+    return [1,2,3,4,5,6,7,8,9].map(n => `/images/${n}.jpg`)
+  }
+}
+
+// Default export for client-side (will be overridden by getServerSideProps)
+const slides: string[] = []
 
 export default slides
 

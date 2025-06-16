@@ -13,22 +13,41 @@ export default NextAuth({
         password: { label: 'Password', type: 'password' },
       },
       authorize: async (credentials) => {
+        console.log('🔐 Auth attempt:', credentials)
         const creds = await loginSchema.parseAsync(credentials)
+        console.log('✅ Parsed credentials:', creds)
+        
+        // Convert to proper case (first letter uppercase, rest lowercase)
+        const firstName = creds.firstName.charAt(0).toUpperCase() + creds.firstName.slice(1).toLowerCase()
+        const lastName = creds.lastName.charAt(0).toUpperCase() + creds.lastName.slice(1).toLowerCase()
+        
         const user = await prisma.user.findUnique({
           where: {
             fullName: {
-              firstName: creds.firstName,
-              lastName: creds.lastName,
+              firstName: firstName,
+              lastName: lastName,
             },
           },
         })
+        console.log('👤 Found user:', user ? 'Yes' : 'No', `(searched for: ${firstName} ${lastName})`)
+        
         if (!user) {
+          console.log('❌ User not found')
           return null
         }
 
+        console.log('🔑 Password check:', { 
+          envPassword: process.env.PASSWORD, 
+          providedPassword: creds.password,
+          match: process.env.PASSWORD === creds.password 
+        })
+        
         if (process.env.PASSWORD !== creds.password) {
+          console.log('❌ Password mismatch')
           return Promise.resolve(null)
         }
+        
+        console.log('✅ Authentication successful')
         return {
           firstName: user.firstName,
           lastName: user.lastName,

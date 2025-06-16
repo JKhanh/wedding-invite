@@ -8,7 +8,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { signOut } from 'next-auth/react'
 import Map, { MapRef, Marker } from 'react-map-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
-import slides from '@/utils/slides'
+import { getImageFiles } from '@/utils/slides'
 import useEmblaCarousel from 'embla-carousel-react'
 import { prisma } from '../prisma'
 import { useForm } from 'react-hook-form'
@@ -37,15 +37,18 @@ export async function getServerSideProps() {
       link: true,
     },
   })
+  const slides = getImageFiles()
+  
   return {
     props: {
       rsvps,
       gifts,
+      slides,
     },
   }
 }
 
-const Dashboard: NextPage<any> = ({ rsvps, gifts }) => {
+const Dashboard: NextPage<any> = ({ rsvps, gifts, slides }) => {
   const { data: session, status } = useSession()
   const [loading, setLoading] = useState(false)
   const [openTab, setOpenTab] = useState(1)
@@ -740,7 +743,7 @@ const Dashboard: NextPage<any> = ({ rsvps, gifts }) => {
                   <div className='flex'>
                     {slides.map((image, index) => (
                       <div className='flex-[0_0_100%]' key={index}>
-                        <Image src={image} className='object-contain w-full h-full' placeholder='blur' alt={''} sizes='85vw' />
+                        <Image src={image} className='object-contain w-full h-full' alt={`Photo ${index + 1}`} sizes='85vw' width={800} height={600} />
                       </div>
                     ))}
                   </div>
@@ -751,7 +754,7 @@ const Dashboard: NextPage<any> = ({ rsvps, gifts }) => {
                       <div className='flex'>
                         {slides.map((image, index) => (
                           <div className='flex-[0_0_100%]' key={index}>
-                            <Image src={image} className='object-contain w-full h-full' placeholder='blur' alt={''} sizes='85vw' />
+                            <Image src={image} className='object-contain w-full h-full' alt={`Photo ${index + 1}`} sizes='85vw' width={800} height={600} />
                           </div>
                         ))}
                       </div>

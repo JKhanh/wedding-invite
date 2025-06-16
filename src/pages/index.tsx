@@ -30,17 +30,32 @@ const Home: NextPage = () => {
 
   const onSubmit = useCallback(async (data: ILogin) => {
     setLoading(true)
-    await signIn('credentials', { ...data, redirect: false, callbackUrl: '/dashboard' }).then(({ ok, error }) => {
-      if (ok) {
+    console.log('🚀 Submitting login:', data)
+    
+    try {
+      const result = await signIn('credentials', { 
+        ...data, 
+        redirect: false, 
+        callbackUrl: '/dashboard' 
+      })
+      
+      console.log('📊 SignIn result:', result)
+      
+      if (result?.ok) {
         if (pushed) return
         router.push('/dashboard')
         setPushed(true)
       } else {
-        if (error === 'CredentialsSignin') setWrong(true)
+        console.log('❌ Login failed:', result?.error)
+        if (result?.error === 'CredentialsSignin') setWrong(true)
       }
-    })
-    setLoading(false)
-  }, [])
+    } catch (error) {
+      console.error('🔥 Login error:', error)
+      setWrong(true)
+    } finally {
+      setLoading(false)
+    }
+  }, [pushed, router])
 
   const handleChange = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (/[^a-zA-Z]+$/.test(e.key) && e.key !== '-' && e.key !== ' ') e.preventDefault()
