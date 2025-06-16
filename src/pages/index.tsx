@@ -6,6 +6,9 @@ import { signIn, useSession } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { loginSchema, ILogin } from './api/auth/validation'
+import { getCoupleNames } from '@/utils/weddingHelpers'
+import { useLanguage } from '@/contexts/LanguageContext'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 import Penguins from '../../public/penguins.svg'
 import { motion } from 'framer-motion'
 import { loginText, letter } from '@/utils/motionText'
@@ -19,6 +22,8 @@ const Home: NextPage = () => {
   const router = useRouter()
   const { data: session, status } = useSession()
   const [pushed, setPushed] = useState(false)
+  const coupleNames = getCoupleNames()
+  const { t } = useLanguage()
 
   useEffect(() => {
     if (status === 'authenticated') {
@@ -30,7 +35,6 @@ const Home: NextPage = () => {
 
   const onSubmit = useCallback(async (data: ILogin) => {
     setLoading(true)
-    console.log('🚀 Submitting login:', data)
     
     try {
       const result = await signIn('credentials', { 
@@ -39,18 +43,14 @@ const Home: NextPage = () => {
         callbackUrl: '/dashboard' 
       })
       
-      console.log('📊 SignIn result:', result)
-      
       if (result?.ok) {
         if (pushed) return
         router.push('/dashboard')
         setPushed(true)
       } else {
-        console.log('❌ Login failed:', result?.error)
         if (result?.error === 'CredentialsSignin') setWrong(true)
       }
     } catch (error) {
-      console.error('🔥 Login error:', error)
       setWrong(true)
     } finally {
       setLoading(false)
@@ -64,6 +64,9 @@ const Home: NextPage = () => {
   if (status === 'unauthenticated') {
     return (
       <div data-theme='green'>
+        <div className='absolute top-4 right-4 z-10'>
+          <LanguageSwitcher />
+        </div>
         <main className='flex items-center justify-center h-[calc(100dvh)] font-body tracking-wide min-w-[360px] min-h-[750px] px-8 my-8 lg:my-0'>
           <form onSubmit={handleSubmit(onSubmit)} autoComplete='false'>
             <div className='flex items-center justify-center flex-col w-full lg:space-x-10 lg:flex-row'>
@@ -77,7 +80,7 @@ const Home: NextPage = () => {
                 className='flex flex-col justify-center mt-6 mb-9 lg:my-0 card-title font-heading font-medium tracking-wide text-7xl lg:text-8xl text-neutral whitespace-pre'
               >
                 <h1>
-                  {'Emily'.split('').map((char, index) => {
+                  {coupleNames.bride.split('').map((char, index) => {
                     return (
                       <motion.span key={char + '-' + index} variants={letter}>
                         {char}
@@ -95,7 +98,7 @@ const Home: NextPage = () => {
                   </span>
                 </h1>
                 <h1>
-                  {'Joshua '.split('').map((char, index) => {
+                  {(coupleNames.groom + ' ').split('').map((char, index) => {
                     return (
                       <motion.span key={char + '-' + index} variants={letter}>
                         {char}
@@ -117,18 +120,18 @@ const Home: NextPage = () => {
                 className='grid max-w-96 card text-base-100 bg-neutral'
               >
                 <div className='card-body'>
-                  <h1 className='card-title justify-center font-display font-light text-5xl mb-6'>Welcome</h1>
+                  <h1 className='card-title justify-center font-display font-light text-5xl mb-6'>{t('homepage.welcome')}</h1>
                   <div className='form-control w-full max-w-xs'>
                     <div className='join'>
                       <div className='join-item'>
                         <label className='label'>
-                          <span className='label-text text-base-100 font-light'>First Name</span>
+                          <span className='label-text text-base-100 font-light'>{t('homepage.firstName')}</span>
                         </label>
                         <input
                           type='text'
                           autoComplete='off'
                           aria-autocomplete='none'
-                          placeholder='Amelié'
+                          placeholder={t('homepage.placeholders.firstName')}
                           className='input w-full max-w-xs text-neutral placeholder-accent'
                           onKeyDown={handleChange}
                           {...register('firstName')}
@@ -136,13 +139,13 @@ const Home: NextPage = () => {
                       </div>
                       <div className='join-item'>
                         <label className='label ml-3'>
-                          <span className='label-text text-base-100 font-light'>Last Name</span>
+                          <span className='label-text text-base-100 font-light'>{t('homepage.lastName')}</span>
                         </label>
                         <input
                           type='text'
                           autoComplete='off'
                           aria-autocomplete='none'
-                          placeholder='Lacroix'
+                          placeholder={t('homepage.placeholders.lastName')}
                           className='input join-item w-full max-w-xs text-neutral placeholder-accent mr-3'
                           onKeyDown={handleChange}
                           {...register('lastName')}
@@ -150,21 +153,21 @@ const Home: NextPage = () => {
                       </div>
                     </div>
                     <label className='label mt-1'>
-                      <span className='label-text text-base-100 font-light'>Password</span>
+                      <span className='label-text text-base-100 font-light'>{t('homepage.password')}</span>
                     </label>
                     <input
                       type='password'
-                      placeholder='•••••••'
+                      placeholder={t('homepage.placeholders.password')}
                       className='input w-full max-w-xs mb-2 text-neutral placeholder-accent'
                       {...register('password')}
                     />
                   </div>
                   <button className='btn btn-secondary mt-2 font-display font-bold tracking-wider' type='submit' onClick={() => setWrong(false)}>
-                    {(loading && <span className='loading loading-infinity loading-sm'></span>) || 'Login'}
+                    {(loading && <span className='loading loading-infinity loading-sm'></span>) || t('homepage.login')}
                   </button>
                   {wrong && (
                     <div className='flex justify-center mt-2'>
-                      <div className='badge badge-error font-light'>Credentials Incorrect</div>
+                      <div className='badge badge-error font-light'>{t('homepage.credentialsIncorrect')}</div>
                     </div>
                   )}
                 </div>
