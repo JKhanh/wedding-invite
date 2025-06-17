@@ -14,7 +14,9 @@
       "Bash(pnpm build:*)",
       "Bash(pnpm dev:*)",
       "Bash(find:*)",
-      "WebFetch(domain:www.embla-carousel.com)"
+      "WebFetch(domain:www.embla-carousel.com)",
+      "Bash(npx prisma:*)",
+      "Bash(pnpm add:*)"
     ],
     "deny": []
   }

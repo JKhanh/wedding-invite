@@ -12,8 +12,7 @@ import {
   getMapCoordinates,
   getWeddingEvents,
   getSocialMediaLinks,
-  getContactInfo,
-  getBankingInfo
+  getContactInfo
 } from '@/utils/weddingHelpers'
 import { useLanguage } from '@/contexts/LanguageContext'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
@@ -35,7 +34,6 @@ declare global {
 
 interface DashboardProps {
   rsvps: any[]
-  gifts: any[]
   slides: string[]
 }
 
@@ -56,12 +54,10 @@ const Dashboard: React.FC<DashboardProps> = ({ rsvps, slides }) => {
   const weddingEvents = getWeddingEvents()
   const socialMedia = getSocialMediaLinks()
   const contactInfo = getContactInfo()
-  const bankingInfo = getBankingInfo()
 
   const [index, setIndex] = useState(0)
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, skipSnaps: true, startIndex: index })
   const [emblaModalRef, emblaModalApi] = useEmblaCarousel({ loop: true, skipSnaps: true, startIndex: index })
-
 
   // Gallery navigation functions
   const scrollPrev = useCallback(() => {
@@ -111,8 +107,6 @@ const Dashboard: React.FC<DashboardProps> = ({ rsvps, slides }) => {
   useEffect(() => {
     if (emblaModalApi) emblaModalApi.on('settle', onSettleModal)
   }, [emblaModalApi, onSettleModal])
-
-
 
   useEffect(() => {
     const targetDate = dateInfo.timestamp
@@ -522,9 +516,6 @@ const Dashboard: React.FC<DashboardProps> = ({ rsvps, slides }) => {
               </motion.div>
             )}
           </div>
-
-
-          
         </main>
       </div>
     )

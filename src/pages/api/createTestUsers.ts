@@ -29,34 +29,37 @@ export default async function handler(
       data: {
         firstName: "Test",
         lastName: "Regular",
+        email: "test.regular@example.com",
         bridalParty: false,
         nzInvite: true,
         myInvite: false,
-        dinner: false, // Regular guest - no dinner access
+        invitedAt: new Date()
       },
     });
 
-    // Create a dinner guest
+    // Create another guest
     await prisma.user.create({
       data: {
         firstName: "Test",
         lastName: "Dinner",
+        email: "test.dinner@example.com",
         bridalParty: false,
         nzInvite: true,
         myInvite: false,
-        dinner: true, // Dinner guest - has reception access
+        invitedAt: new Date()
       },
     });
 
-    // Create a bridal party member (bonus)
+    // Create a bridal party member
     await prisma.user.create({
       data: {
         firstName: "Test",
         lastName: "Bridal",
-        bridalParty: true, // Bridal party member
+        email: "test.bridal@example.com",
+        bridalParty: true,
         nzInvite: true,
         myInvite: false,
-        dinner: true, // Usually bridal party also attends dinner
+        invitedAt: new Date()
       },
     });
 
@@ -68,24 +71,21 @@ export default async function handler(
           name: "Test Regular",
           firstName: "Test",
           lastName: "Regular",
-          access: "Basic dashboard only",
-          dinner: false,
+          email: "test.regular@example.com",
           bridalParty: false
         },
         {
           name: "Test Dinner",
           firstName: "Test",
           lastName: "Dinner",
-          access: "Dashboard + Reception info",
-          dinner: true,
+          email: "test.dinner@example.com",
           bridalParty: false
         },
         {
           name: "Test Bridal",
           firstName: "Test",
           lastName: "Bridal",
-          access: "Dashboard + Reception + Bridal party status",
-          dinner: true,
+          email: "test.bridal@example.com",
           bridalParty: true
         }
       ]

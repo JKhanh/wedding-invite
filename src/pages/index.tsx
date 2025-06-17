@@ -24,13 +24,8 @@ export async function getServerSideProps() {
         RSVPOthersNo: true,
       },
     })
-    const gifts = await prisma.gift.findMany({
-      select: {
-        id: true,
-        name: true,
-        link: true,
-      },
-    })
+    // Note: Gift table was removed in schema, keeping empty array for compatibility
+    const gifts: any[] = []
     const slides = getImageFiles()
     
     return {

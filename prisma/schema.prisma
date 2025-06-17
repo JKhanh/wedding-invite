@@ -11,28 +11,22 @@ model User {
   id            Int       @id @default(autoincrement())
   firstName     String
   lastName      String
+  email         String?
+  phone         String?
   bridalParty   Boolean   @default(false)
   nzInvite      Boolean   @default(false)
   myInvite      Boolean   @default(false)
-  dinner        Boolean   @default(false)
-  gifts         Gift[]
+  rsvpToken     String    @unique @default(cuid())
   RSVP          Boolean?
   RSVPOthersYes String?
   RSVPOthersNo  String?
   RSVPDate      DateTime?
+  invitedAt     DateTime?
+  rsvpViewedAt  DateTime?
+  tableNumber   Int?
+  notes         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   @@unique(fields: [firstName, lastName], name: "fullName")
-}
-
-model Gift {
-  id        Int      @id @default(autoincrement())
-  name      String?
-  link      String?
-  price     Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User?    @relation(fields: [userId], references: [id])
-  userId    Int?
 }
