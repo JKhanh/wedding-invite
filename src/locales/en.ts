@@ -256,6 +256,24 @@ export const en = {
     // Navigation
     backToList: "Back to Guest List",
     backToDashboard: "Back to Dashboard",
+    
+    // CSV Import
+    importGuests: "Import Guests",
+    uploadCSV: "Upload CSV File",
+    downloadSample: "Download Sample CSV",
+    importing: "Importing...",
+    importResults: "Import Results",
+    imported: "Imported",
+    skipped: "Skipped",
+    errors: "Errors",
+    viewErrors: "View Errors",
+    dismiss: "Dismiss",
+    importFailed: "Import failed",
+    selectCSVFile: "Please select a CSV file",
+    importSuccess: "Import successful",
+    csvFormat: "CSV Format",
+    csvFormatHelp: "CSV file should have columns: firstName, lastName, email (optional), phone (optional), bridalParty (true/false), tableNumber (number), notes (optional)",
+    csvEncodingHelp: "CSV file should be saved with UTF-8 encoding to support Vietnamese text",
   },
 }
 

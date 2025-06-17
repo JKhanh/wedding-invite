@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { GetServerSideProps } from 'next'
 import Link from 'next/link'
 import Head from 'next/head'
@@ -38,6 +38,10 @@ export default function GuestsPage({ initialGuests }: GuestsPageProps) {
   const [loading, setLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [filter, setFilter] = useState<'all' | 'confirmed' | 'declined' | 'pending'>('all')
+  const [importing, setImporting] = useState(false)
+  const [importResults, setImportResults] = useState<any>(null)
+  const [refreshing, setRefreshing] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleLogout = async () => {
     await logout()
@@ -64,6 +68,8 @@ export default function GuestsPage({ initialGuests }: GuestsPageProps) {
 
       if (response.ok) {
         setGuests(guests.filter(g => g.id !== id))
+        // Optionally refresh the entire list to ensure data consistency
+        // await refreshGuestList()
       } else {
         alert('Failed to delete guest')
       }
@@ -71,6 +77,88 @@ export default function GuestsPage({ initialGuests }: GuestsPageProps) {
       alert('Error deleting guest')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    if (!file.name.endsWith('.csv')) {
+      alert('Please select a CSV file')
+      return
+    }
+
+    setImporting(true)
+    setImportResults(null)
+
+    try {
+      const formData = new FormData()
+      formData.append('csvFile', file)
+
+      const response = await fetch('/api/importGuests', {
+        method: 'POST',
+        body: formData
+      })
+
+      const results = await response.json()
+
+      if (response.ok) {
+        setImportResults(results)
+        // Refresh the guest list
+        if (results.imported > 0) {
+          await refreshGuestList()
+        }
+      } else {
+        alert(`Import failed: ${results.error || 'Unknown error'}`)
+      }
+    } catch (error) {
+      alert('Error during import')
+      console.error(error)
+    } finally {
+      setImporting(false)
+      // Clear the file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+    }
+  }
+
+  const downloadSampleCSV = () => {
+    const csvContent = `firstName,lastName,email,phone,bridalParty,nzInvite,myInvite,tableNumber,notes
+Nguyễn,Văn An,nguyen.van.an@email.com,0123456789,false,false,true,1,Bạn thân cô dâu
+Trần,Thị Bình,tran.thi.binh@email.com,0987654321,true,false,true,2,Phù dâu
+Lê,Văn Cường,le.van.cuong@email.com,,false,true,false,3,Anh em chú rể`
+
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+    link.setAttribute('href', url)
+    link.setAttribute('download', 'sample_guest_list.csv')
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  const refreshGuestList = async () => {
+    setRefreshing(true)
+    try {
+      const response = await fetch('/api/admin/guests')
+      if (response.ok) {
+        const updatedGuests = await response.json()
+        setGuests(updatedGuests)
+      } else {
+        alert('Failed to refresh guest list')
+      }
+    } catch (error) {
+      alert('Error refreshing guest list')
+      console.error(error)
+    } finally {
+      setRefreshing(false)
     }
   }
 
@@ -140,10 +228,130 @@ export default function GuestsPage({ initialGuests }: GuestsPageProps) {
                   {filteredGuests.length} of {guests.length} guests
                 </p>
               </div>
-              <Link href="/admin/guests/new" className="btn btn-primary">
-                Add New Guest
-              </Link>
+              <div className="flex gap-2">
+                <button 
+                  onClick={refreshGuestList}
+                  disabled={refreshing}
+                  className="btn btn-outline"
+                  title="Refresh guest list"
+                >
+                  {refreshing ? (
+                    <>
+                      <span className="loading loading-spinner loading-sm"></span>
+                      Refreshing...
+                    </>
+                  ) : (
+                    <>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                      Refresh
+                    </>
+                  )}
+                </button>
+                <div className="dropdown dropdown-end">
+                  <label tabIndex={0} className="btn btn-secondary">
+                    Import Guests
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </label>
+                  <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                    <li>
+                      <button onClick={handleImportClick} disabled={importing}>
+                        {importing ? (
+                          <>
+                            <span className="loading loading-spinner loading-xs"></span>
+                            Importing...
+                          </>
+                        ) : (
+                          <>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                            Upload CSV File
+                          </>
+                        )}
+                      </button>
+                    </li>
+                    <li>
+                      <button onClick={downloadSampleCSV}>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Download Sample CSV
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+                <Link href="/admin/guests/new" className="btn btn-primary">
+                  Add New Guest
+                </Link>
+              </div>
             </div>
+
+            {/* Hidden file input */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              accept=".csv"
+              className="hidden"
+            />
+
+            {/* Import Results */}
+            {importResults && (
+              <div className="card bg-base-100 shadow-xl">
+                <div className="card-body">
+                  <h3 className="text-lg font-semibold mb-4">Import Results</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div className="stat">
+                      <div className="stat-title">Imported</div>
+                      <div className="stat-value text-success">{importResults.imported}</div>
+                    </div>
+                    <div className="stat">
+                      <div className="stat-title">Skipped</div>
+                      <div className="stat-value text-warning">{importResults.skipped}</div>
+                    </div>
+                    <div className="stat">
+                      <div className="stat-title">Errors</div>
+                      <div className="stat-value text-error">{importResults.errors.length}</div>
+                    </div>
+                  </div>
+                  
+                  {importResults.errors.length > 0 && (
+                    <div className="collapse collapse-arrow border border-error">
+                      <input type="checkbox" />
+                      <div className="collapse-title text-error font-medium">
+                        View Import Errors ({importResults.errors.length})
+                      </div>
+                      <div className="collapse-content">
+                        <div className="space-y-2 max-h-48 overflow-y-auto">
+                          {importResults.errors.map((error: any, index: number) => (
+                            <div key={index} className="bg-error/10 p-2 rounded text-sm">
+                              <div className="font-medium">Row {error.row}:</div>
+                              <div className="text-error">{error.error}</div>
+                              <div className="text-xs text-neutral/70 mt-1">
+                                Data: {JSON.stringify(error.data)}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="flex justify-end mt-4">
+                    <button 
+                      className="btn btn-ghost btn-sm"
+                      onClick={() => setImportResults(null)}
+                    >
+                      Dismiss
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Filters */}
             <div className="card bg-base-100 shadow-xl">

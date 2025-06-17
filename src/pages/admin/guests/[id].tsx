@@ -325,7 +325,15 @@ export default function EditGuestPage({ guest }: EditGuestPageProps) {
                         <div className="flex justify-between items-center">
                           <span className="text-sm font-medium">RSVP Date:</span>
                           <span className="text-sm">
-                            {new Date(guest.RSVPDate).toLocaleDateString()}
+                            {new Date(guest.RSVPDate).toLocaleString('en-US', {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              second: '2-digit',
+                              hour12: true
+                            })}
                           </span>
                         </div>
                       )}
@@ -391,20 +399,44 @@ export default function EditGuestPage({ guest }: EditGuestPageProps) {
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="font-medium">Created:</span>
-                        <span>{new Date(guest.createdAt).toLocaleDateString()}</span>
+                        <span>{new Date(guest.createdAt).toLocaleString('en-US', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          second: '2-digit',
+                          hour12: true
+                        })}</span>
                       </div>
                       
                       {guest.invitedAt && (
                         <div className="flex justify-between">
                           <span className="font-medium">Invited:</span>
-                          <span>{new Date(guest.invitedAt).toLocaleDateString()}</span>
+                          <span>{new Date(guest.invitedAt).toLocaleString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit',
+                            hour12: true
+                          })}</span>
                         </div>
                       )}
 
                       {guest.rsvpViewedAt && (
                         <div className="flex justify-between">
                           <span className="font-medium">Viewed RSVP:</span>
-                          <span>{new Date(guest.rsvpViewedAt).toLocaleDateString()}</span>
+                          <span>{new Date(guest.rsvpViewedAt).toLocaleString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit',
+                            hour12: true
+                          })}</span>
                         </div>
                       )}
                     </div>

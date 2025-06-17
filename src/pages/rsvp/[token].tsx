@@ -17,7 +17,12 @@ import {
 } from '@/utils/weddingHelpers'
 
 const rsvpSchema = z.object({
-  RSVP: z.boolean(),
+  RSVP: z.union([z.boolean(), z.string()]).transform((val) => {
+    if (typeof val === 'string') {
+      return val === 'true'
+    }
+    return val
+  }),
   RSVPOthersYes: z.string().optional(),
   RSVPOthersNo: z.string().optional(),
   notes: z.string().optional()
@@ -54,17 +59,37 @@ export default function RSVPPage({ guest, token }: RSVPPageProps) {
   const dateInfo = getFormattedDate(language)
   const weddingEvents = getWeddingEvents()
 
-  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<RSVPForm>({
+  const form = useForm<RSVPForm>({
     resolver: zodResolver(rsvpSchema),
     defaultValues: {
-      RSVP: currentGuest.RSVP ?? undefined,
-      RSVPOthersYes: currentGuest.RSVPOthersYes || '',
-      RSVPOthersNo: currentGuest.RSVPOthersNo || '',
+      RSVP: undefined,
+      RSVPOthersYes: '',
+      RSVPOthersNo: '',
       notes: ''
     }
   })
 
+  const { register, handleSubmit, watch, setValue, reset, formState: { errors } } = form
   const watchRSVP = watch('RSVP')
+
+  // Reset form and state when guest/token changes
+  useEffect(() => {
+    setCurrentGuest(guest)
+    
+    // Reset form completely with new guest data
+    reset({
+      RSVP: guest.RSVP ?? undefined,
+      RSVPOthersYes: guest.RSVPOthersYes || '',
+      RSVPOthersNo: guest.RSVPOthersNo || '',
+      notes: ''
+    })
+    
+    // Reset all local state
+    setShowOthers(false)
+    setSubmitted(guest.RSVP !== null)
+    setError('')
+    setLoading(false)
+  }, [guest.id, guest.RSVP, guest.RSVPOthersYes, guest.RSVPOthersNo, reset])
 
   useEffect(() => {
     if (currentGuest.RSVP !== null) {
@@ -105,6 +130,9 @@ export default function RSVPPage({ guest, token }: RSVPPageProps) {
       <>
         <Head>
           <title>{t('rsvpPage.thankYou')} - {coupleNames.bride} & {coupleNames.groom}</title>
+          <meta name="cache-control" content="no-cache, no-store, must-revalidate" />
+          <meta name="pragma" content="no-cache" />
+          <meta name="expires" content="0" />
         </Head>
         
         <div data-theme="green" className="min-h-screen flex items-center justify-center bg-base-200 py-12 px-4">
@@ -175,6 +203,9 @@ export default function RSVPPage({ guest, token }: RSVPPageProps) {
     <>
       <Head>
         <title>{t('rsvpPage.title')} - {coupleNames.bride} & {coupleNames.groom}</title>
+        <meta name="cache-control" content="no-cache, no-store, must-revalidate" />
+        <meta name="pragma" content="no-cache" />
+        <meta name="expires" content="0" />
       </Head>
       
       <div data-theme="green" className="min-h-screen bg-base-200 py-12 px-4">
@@ -233,7 +264,7 @@ export default function RSVPPage({ guest, token }: RSVPPageProps) {
               <div className="card-body">
                 <h3 className="card-title text-center mb-6">{t('rsvpPage.pleaseRespond')}</h3>
                 
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <form key={token} onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   {/* Attendance Question */}
                   <div className="form-control">
                     <label className="label">
@@ -246,9 +277,7 @@ export default function RSVPPage({ guest, token }: RSVPPageProps) {
                             type="radio" 
                             className={`radio ${watchRSVP === true ? 'radio-success' : ''}`}
                             value="true"
-                            {...register('RSVP', { 
-                              setValueAs: (value) => value === 'true' 
-                            })}
+                            {...register('RSVP')}
                             onChange={() => setValue('RSVP', true)}
                             checked={watchRSVP === true}
                           />
@@ -270,9 +299,7 @@ export default function RSVPPage({ guest, token }: RSVPPageProps) {
                             type="radio" 
                             className={`radio ${watchRSVP === false ? 'radio-error' : ''}`}
                             value="false"
-                            {...register('RSVP', { 
-                              setValueAs: (value) => value === 'true' 
-                            })}
+                            {...register('RSVP')}
                             onChange={() => setValue('RSVP', false)}
                             checked={watchRSVP === false}
                           />

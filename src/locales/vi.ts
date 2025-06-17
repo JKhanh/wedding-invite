@@ -256,6 +256,24 @@ export const vi = {
     // Navigation
     backToList: "Quay lại danh sách khách mời",
     backToDashboard: "Quay lại bảng điều khiển",
+    
+    // CSV Import
+    importGuests: "Nhập khách mời",
+    uploadCSV: "Tải lên file CSV",
+    downloadSample: "Tải xuống mẫu CSV",
+    importing: "Đang nhập...",
+    importResults: "Kết quả nhập liệu",
+    imported: "Đã nhập",
+    skipped: "Đã bỏ qua",
+    errors: "Lỗi",
+    viewErrors: "Xem lỗi",
+    dismiss: "Đóng",
+    importFailed: "Nhập thất bại",
+    selectCSVFile: "Vui lòng chọn file CSV",
+    importSuccess: "Nhập thành công",
+    csvFormat: "Định dạng CSV",
+    csvFormatHelp: "File CSV phải có các cột: firstName, lastName, email (tùy chọn), phone (tùy chọn), bridalParty (true/false), tableNumber (số), notes (tùy chọn)",
+    csvEncodingHelp: "File CSV nên được lưu với mã hóa UTF-8 để hỗ trợ tiếng Việt",
   },
 }
 
