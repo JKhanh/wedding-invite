@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { GetServerSideProps } from 'next'
 import Link from 'next/link'
 import Head from 'next/head'
@@ -128,21 +128,6 @@ export default function GuestsPage({ initialGuests }: GuestsPageProps) {
     }
   }
 
-  const downloadSampleCSV = () => {
-    const csvContent = `firstName,lastName,email,phone,bridalParty,nzInvite,myInvite,tableNumber,notes
-Nguyễn,Văn An,nguyen.van.an@email.com,0123456789,false,false,true,1,Bạn thân cô dâu
-Trần,Thị Bình,tran.thi.binh@email.com,0987654321,true,false,true,2,Phù dâu
-Lê,Văn Cường,le.van.cuong@email.com,,false,true,false,3,Anh em chú rể`
-
-    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' })
-    const link = document.createElement('a')
-    const url = URL.createObjectURL(blob)
-    link.setAttribute('href', url)
-    link.setAttribute('download', 'sample_guest_list.csv')
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
 
   const refreshGuestList = async () => {
     setRefreshing(true)
@@ -193,20 +178,31 @@ Lê,Văn Cường,le.van.cuong@email.com,,false,true,false,3,Anh em chú rể`
         {/* Navigation */}
         <div className="navbar bg-base-100 shadow-lg">
           <div className="flex-1">
-            <Link href="/admin/dashboard" className="btn btn-ghost normal-case text-xl">
-              Wedding Admin
+            <Link href="/admin/dashboard" className="btn btn-ghost normal-case text-lg sm:text-xl">
+              <span className="hidden sm:inline">Wedding Admin</span>
+              <span className="sm:hidden">Admin</span>
             </Link>
           </div>
           <div className="flex-none">
             <ul className="menu menu-horizontal px-1">
               <li>
-                <Link href="/admin/dashboard" className="btn btn-ghost">
-                  Dashboard
+                <Link href="/admin/dashboard" className="btn btn-ghost btn-sm sm:btn-md">
+                  <span className="hidden sm:inline">Dashboard</span>
+                  <span className="sm:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                  </span>
                 </Link>
               </li>
               <li>
-                <button onClick={handleLogout} className="btn btn-ghost">
-                  Logout
+                <button onClick={handleLogout} className="btn btn-ghost btn-sm sm:btn-md">
+                  <span className="hidden sm:inline">Logout</span>
+                  <span className="sm:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                  </span>
                 </button>
               </li>
             </ul>
@@ -214,25 +210,25 @@ Lê,Văn Cường,le.van.cuong@email.com,,false,true,false,3,Anh em chú rể`
         </div>
 
         {/* Main Content */}
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="space-y-6"
+            className="space-y-4 sm:space-y-6"
           >
             {/* Header */}
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
               <div>
-                <h1 className="text-3xl font-bold text-neutral">Manage Guests</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold text-neutral">Manage Guests</h1>
                 <p className="text-neutral/70">
                   {filteredGuests.length} of {guests.length} guests
                 </p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-row gap-2 items-center">
                 <button 
                   onClick={refreshGuestList}
                   disabled={refreshing}
-                  className="btn btn-outline"
+                  className="btn btn-outline h-12 px-4"
                   title="Refresh guest list"
                 >
                   {refreshing ? (
@@ -241,51 +237,26 @@ Lê,Văn Cường,le.van.cuong@email.com,,false,true,false,3,Anh em chú rể`
                       Refreshing...
                     </>
                   ) : (
-                    <>
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                      </svg>
-                      Refresh
-                    </>
+                    'Refresh'
                   )}
                 </button>
-                <div className="dropdown dropdown-end">
-                  <label tabIndex={0} className="btn btn-secondary">
-                    Import Guests
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </label>
-                  <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                    <li>
-                      <button onClick={handleImportClick} disabled={importing}>
-                        {importing ? (
-                          <>
-                            <span className="loading loading-spinner loading-xs"></span>
-                            Importing...
-                          </>
-                        ) : (
-                          <>
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                            </svg>
-                            Upload CSV File
-                          </>
-                        )}
-                      </button>
-                    </li>
-                    <li>
-                      <button onClick={downloadSampleCSV}>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        Download Sample CSV
-                      </button>
-                    </li>
-                  </ul>
-                </div>
-                <Link href="/admin/guests/new" className="btn btn-primary">
-                  Add New Guest
+                <button 
+                  onClick={handleImportClick}
+                  disabled={importing}
+                  className="btn btn-secondary h-12 px-4"
+                  title="Import guests from CSV file"
+                >
+                  {importing ? (
+                    <>
+                      <span className="loading loading-spinner loading-sm"></span>
+                      Importing...
+                    </>
+                  ) : (
+                    'Import'
+                  )}
+                </button>
+                <Link href="/admin/guests/new" className="btn btn-primary h-12 px-4">
+                  Add Guest
                 </Link>
               </div>
             </div>
@@ -384,43 +355,47 @@ Lê,Văn Cường,le.van.cuong@email.com,,false,true,false,3,Anh em chú rể`
 
             {/* Guest List */}
             <div className="card bg-base-100 shadow-xl">
-              <div className="card-body">
+              <div className="card-body p-2 sm:p-6">
                 {filteredGuests.length > 0 ? (
                   <div className="overflow-x-auto">
-                    <table className="table table-zebra">
+                    <table className="table table-zebra table-compact sm:table-normal">
                       <thead>
                         <tr>
-                          <th>Name</th>
-                          <th>Contact</th>
-                          <th>Status</th>
-                          <th>Additional Guests</th>
-                          <th>RSVP URL</th>
-                          <th>Actions</th>
+                          <th className="text-xs sm:text-sm">Name</th>
+                          <th className="hidden sm:table-cell text-xs sm:text-sm">Contact</th>
+                          <th className="text-xs sm:text-sm">Status</th>
+                          <th className="hidden lg:table-cell text-xs sm:text-sm">Additional Guests</th>
+                          <th className="hidden md:table-cell text-xs sm:text-sm">RSVP URL</th>
+                          <th className="text-xs sm:text-sm">Actions</th>
                         </tr>
                       </thead>
                       <tbody>
                         {filteredGuests.map((guest) => (
                           <tr key={guest.id}>
                             <td>
-                              <div className="flex items-center space-x-3">
-                                <div>
-                                  <div className="font-bold">
-                                    {guest.firstName} {guest.lastName}
-                                    {guest.bridalParty && (
-                                      <span className="badge badge-secondary badge-sm ml-2">
-                                        Bridal Party
-                                      </span>
-                                    )}
-                                  </div>
-                                  {guest.tableNumber && (
-                                    <div className="text-sm opacity-50">
-                                      Table {guest.tableNumber}
-                                    </div>
+                              <div className="flex flex-col space-y-1">
+                                <div className="font-bold text-sm sm:text-base">
+                                  {guest.firstName} {guest.lastName}
+                                  {guest.bridalParty && (
+                                    <span className="badge badge-secondary badge-xs sm:badge-sm ml-1 sm:ml-2">
+                                      <span className="hidden sm:inline">Bridal Party</span>
+                                      <span className="sm:hidden">BP</span>
+                                    </span>
                                   )}
+                                </div>
+                                {guest.tableNumber && (
+                                  <div className="text-xs sm:text-sm opacity-50">
+                                    Table {guest.tableNumber}
+                                  </div>
+                                )}
+                                {/* Show contact info on mobile when contact column is hidden */}
+                                <div className="sm:hidden text-xs text-neutral/70">
+                                  {guest.email && <div>{guest.email}</div>}
+                                  {guest.phone && <div>{guest.phone}</div>}
                                 </div>
                               </div>
                             </td>
-                            <td>
+                            <td className="hidden sm:table-cell">
                               <div className="text-sm">
                                 {guest.email && (
                                   <div className="text-neutral">{guest.email}</div>
@@ -431,7 +406,7 @@ Lê,Văn Cường,le.van.cuong@email.com,,false,true,false,3,Anh em chú rể`
                               </div>
                             </td>
                             <td>{getStatusBadge(guest.RSVP)}</td>
-                            <td>
+                            <td className="hidden lg:table-cell">
                               <div className="text-sm">
                                 {guest.RSVPOthersYes && (
                                   <div className="text-success">✓ {guest.RSVPOthersYes}</div>
@@ -444,7 +419,7 @@ Lê,Văn Cường,le.van.cuong@email.com,,false,true,false,3,Anh em chú rể`
                                 )}
                               </div>
                             </td>
-                            <td>
+                            <td className="hidden md:table-cell">
                               <button
                                 className="btn btn-xs btn-outline"
                                 onClick={() => copyToClipboard(guest.rsvpUrl)}
@@ -454,19 +429,39 @@ Lê,Văn Cường,le.van.cuong@email.com,,false,true,false,3,Anh em chú rể`
                               </button>
                             </td>
                             <td>
-                              <div className="flex gap-2">
+                              <div className="flex flex-col sm:flex-row gap-1 sm:gap-2">
                                 <Link
                                   href={`/admin/guests/${guest.id}`}
                                   className="btn btn-xs btn-primary"
                                 >
-                                  Edit
+                                  <span className="hidden sm:inline">Edit</span>
+                                  <span className="sm:hidden">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                  </span>
                                 </Link>
                                 <button
                                   className="btn btn-xs btn-error"
                                   onClick={() => deleteGuest(guest.id)}
                                   disabled={loading}
                                 >
-                                  Delete
+                                  <span className="hidden sm:inline">Delete</span>
+                                  <span className="sm:hidden">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                  </span>
+                                </button>
+                                {/* Mobile-only RSVP URL button */}
+                                <button
+                                  className="btn btn-xs btn-outline md:hidden"
+                                  onClick={() => copyToClipboard(guest.rsvpUrl)}
+                                  title="Copy RSVP URL"
+                                >
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                  </svg>
                                 </button>
                               </div>
                             </td>
