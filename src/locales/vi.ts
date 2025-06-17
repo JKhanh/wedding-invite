@@ -151,6 +151,112 @@ export const vi = {
   dashboard: {
     guest: "Khách",
   },
+
+  // RSVP Page
+  rsvpPage: {
+    title: "Xác nhận tham dự",
+    thankYou: "Cảm ơn bạn!",
+    thankYouMessage: "Cảm ơn bạn đã xác nhận tham dự",
+    excited: "Chúng tôi rất hào hứng được chào đón bạn! ✨",
+    missYou: "Chúng tôi sẽ nhớ bạn, nhưng chúng tôi hiểu. ❤️",
+    welcomeMessage: "Chúng tôi rất hào hứng với ngày đặc biệt của mình và muốn biết liệu bạn có thể tham gia cùng chúng tôi không!",
+    pleaseRespond: "Vui lòng phản hồi",
+    willYouAttend: "Bạn có tham dự không?",
+    yesAttending: "Có, tôi sẽ có mặt!",
+    noAttending: "Xin lỗi, tôi không thể tham dự",
+    additionalGuests: "Tôi đang trả lời cho khách mời khác",
+    whoElseAttending: "Ai khác sẽ tham dự?",
+    whoElseCantMake: "Ai khác không thể tham dự?",
+    additionalGuestsPlaceholder: "Tên của khách mời khác sẽ tham dự...",
+    cantMakePlaceholder: "Tên của khách mời khác không thể tham dự...",
+    dietaryRequirements: "Yêu cầu về chế độ ăn hoặc ghi chú đặc biệt:",
+    anyMessage: "Tin nhắn gửi chúng tôi:",
+    dietaryPlaceholder: "Cho chúng tôi biết về các hạn chế về chế độ ăn, dị ứng hoặc yêu cầu đặc biệt...",
+    messagePlaceholder: "Chúng tôi rất muốn nghe từ bạn...",
+    submitRSVP: "Gửi xác nhận",
+    submitting: "Đang gửi...",
+    weddingDetails: "Chi tiết đám cưới",
+    when: "Khi nào:",
+    where: "Ở đâu:",
+    event: "Sự kiện:",
+    dressCode: "Trang phục:",
+    dressCodeText: "Trang trọng/Cocktail 🍸",
+    whatToExpected: "Những gì mong đợi:",
+    followedBy: "tiếp theo là",
+    bridalParty: "Đội ngũ cô dâu chú rể",
+  },
+
+  // Admin System
+  admin: {
+    login: "Đăng nhập Admin",
+    password: "Mật khẩu",
+    loginButton: "Đăng nhập",
+    loginError: "Mật khẩu không đúng",
+    logout: "Đăng xuất",
+    dashboard: "Bảng điều khiển",
+    guests: "Khách mời",
+    
+    // Dashboard
+    dashboardTitle: "Bảng điều khiển Admin",
+    totalGuests: "Tổng khách mời",
+    confirmed: "Đã xác nhận",
+    declined: "Từ chối", 
+    pending: "Chờ phản hồi",
+    recentRSVPs: "Xác nhận gần đây",
+    noRecentRSVPs: "Không có xác nhận gần đây",
+    viewedOn: "Đã xem vào",
+    rsvpOn: "Xác nhận vào",
+    
+    // Guest Management
+    guestManagement: "Quản lý khách mời",
+    addNewGuest: "Thêm khách mời mới",
+    search: "Tìm kiếm khách mời...",
+    filterAll: "Tất cả",
+    filterConfirmed: "Đã xác nhận", 
+    filterDeclined: "Từ chối",
+    filterPending: "Chờ phản hồi",
+    filterBridalParty: "Đội ngũ cô dâu chú rể",
+    
+    // Guest Form
+    firstName: "Tên",
+    lastName: "Họ", 
+    email: "Email",
+    phone: "Số điện thoại",
+    bridalPartyMember: "Thành viên đội ngũ cô dâu chú rể",
+    tableNumber: "Số bàn",
+    notes: "Ghi chú",
+    rsvpUrl: "Link xác nhận",
+    copyUrl: "Sao chép link",
+    urlCopied: "Đã sao chép link!",
+    save: "Lưu",
+    saving: "Đang lưu...",
+    cancel: "Hủy",
+    delete: "Xóa",
+    deleteConfirm: "Bạn có chắc chắn muốn xóa khách mời này?",
+    
+    // Guest List
+    name: "Tên",
+    status: "Trạng thái",
+    rsvpDate: "Ngày xác nhận",
+    actions: "Hành động",
+    edit: "Chỉnh sửa",
+    view: "Xem",
+    
+    // Status
+    statusConfirmed: "Đã xác nhận",
+    statusDeclined: "Từ chối", 
+    statusPending: "Chờ phản hồi",
+    
+    // Messages
+    guestCreated: "Đã tạo khách mời thành công",
+    guestUpdated: "Đã cập nhật khách mời thành công",
+    guestDeleted: "Đã xóa khách mời thành công",
+    error: "Đã xảy ra lỗi",
+    
+    // Navigation
+    backToList: "Quay lại danh sách khách mời",
+    backToDashboard: "Quay lại bảng điều khiển",
+  },
 }
 
 export default vi

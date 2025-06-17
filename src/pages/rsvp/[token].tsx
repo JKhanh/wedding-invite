@@ -104,7 +104,7 @@ export default function RSVPPage({ guest, token }: RSVPPageProps) {
     return (
       <>
         <Head>
-          <title>Thank You - {coupleNames.bride} & {coupleNames.groom}</title>
+          <title>{t('rsvpPage.thankYou')} - {coupleNames.bride} & {coupleNames.groom}</title>
         </Head>
         
         <div data-theme="green" className="min-h-screen flex items-center justify-center bg-base-200 py-12 px-4">
@@ -130,21 +130,21 @@ export default function RSVPPage({ guest, token }: RSVPPageProps) {
                 </div>
                 
                 <h1 className="text-3xl font-bold text-neutral mb-4">
-                  Thank You!
+                  {t('rsvpPage.thankYou')}
                 </h1>
                 
                 <div className="space-y-4">
                   <p className="text-lg">
-                    Thank you for your RSVP, {currentGuest.firstName}!
+                    {t('rsvpPage.thankYouMessage')}, {currentGuest.firstName}!
                   </p>
                   
                   {currentGuest.RSVP === true ? (
                     <div className="alert alert-success">
-                      <span>We're excited to celebrate with you! ✨</span>
+                      <span>{t('rsvpPage.excited')}</span>
                     </div>
                   ) : (
                     <div className="alert alert-info">
-                      <span>We'll miss you, but we understand. ❤️</span>
+                      <span>{t('rsvpPage.missYou')}</span>
                     </div>
                   )}
                   
@@ -156,9 +156,9 @@ export default function RSVPPage({ guest, token }: RSVPPageProps) {
                   
                   {currentGuest.RSVP === true && (
                     <div className="mt-6 p-4 bg-base-200 rounded-lg">
-                      <p className="text-sm font-medium">What to expect:</p>
+                      <p className="text-sm font-medium">{t('rsvpPage.whatToExpected')}</p>
                       <p className="text-sm text-neutral/70 mt-1">
-                        {weddingEvents.ceremony.description} followed by {weddingEvents.ceremony.refreshmentsNote}
+                        {weddingEvents.ceremony.description} {t('rsvpPage.followedBy')} {weddingEvents.ceremony.refreshmentsNote}
                       </p>
                     </div>
                   )}
@@ -174,7 +174,7 @@ export default function RSVPPage({ guest, token }: RSVPPageProps) {
   return (
     <>
       <Head>
-        <title>RSVP - {coupleNames.bride} & {coupleNames.groom}</title>
+        <title>{t('rsvpPage.title')} - {coupleNames.bride} & {coupleNames.groom}</title>
       </Head>
       
       <div data-theme="green" className="min-h-screen bg-base-200 py-12 px-4">
@@ -219,11 +219,11 @@ export default function RSVPPage({ guest, token }: RSVPPageProps) {
                 <h2 className="text-2xl font-bold text-neutral mb-4">
                   Hi {currentGuest.firstName}!
                   {currentGuest.bridalParty && (
-                    <span className="badge badge-secondary badge-lg ml-3">Bridal Party</span>
+                    <span className="badge badge-secondary badge-lg ml-3">{t('rsvpPage.bridalParty')}</span>
                   )}
                 </h2>
                 <p className="text-lg text-neutral/80">
-                  We're so excited to celebrate our special day and would love to know if you'll be joining us!
+                  {t('rsvpPage.welcomeMessage')}
                 </p>
               </div>
             </div>
@@ -231,13 +231,13 @@ export default function RSVPPage({ guest, token }: RSVPPageProps) {
             {/* RSVP Form */}
             <div className="card bg-base-100 shadow-xl">
               <div className="card-body">
-                <h3 className="card-title text-center mb-6">Please Respond</h3>
+                <h3 className="card-title text-center mb-6">{t('rsvpPage.pleaseRespond')}</h3>
                 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   {/* Attendance Question */}
                   <div className="form-control">
                     <label className="label">
-                      <span className="label-text text-lg font-medium">Will you be attending?</span>
+                      <span className="label-text text-lg font-medium">{t('rsvpPage.willYouAttend')}</span>
                     </label>
                     <div className="flex gap-4">
                       <label className="cursor-pointer flex-1">
@@ -253,13 +253,13 @@ export default function RSVPPage({ guest, token }: RSVPPageProps) {
                             checked={watchRSVP === true}
                           />
                           <div className="flex-1">
-                            <span className="text-lg font-medium">Yes, I'll be there!</span>
+                            <span className="text-lg font-medium">{t('rsvpPage.yesAttending')}</span>
                             <div className="text-2xl">🎉</div>
                           </div>
                         </div>
                         {watchRSVP === true && (
                           <div className="mt-2 ml-8 text-sm text-success">
-                            ✓ We're excited to celebrate with you!
+                            ✓ {t('rsvpPage.excited')}
                           </div>
                         )}
                       </label>
@@ -277,13 +277,13 @@ export default function RSVPPage({ guest, token }: RSVPPageProps) {
                             checked={watchRSVP === false}
                           />
                           <div className="flex-1">
-                            <span className="text-lg font-medium">Sorry, can't make it</span>
+                            <span className="text-lg font-medium">{t('rsvpPage.noAttending')}</span>
                             <div className="text-2xl">😔</div>
                           </div>
                         </div>
                         {watchRSVP === false && (
                           <div className="mt-2 ml-8 text-sm text-error">
-                            We'll miss you, but we understand!
+                            {t('rsvpPage.missYou')}
                           </div>
                         )}
                       </label>
