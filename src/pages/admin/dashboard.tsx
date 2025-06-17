@@ -32,12 +32,21 @@ export default function AdminDashboard({ stats, recentRSVPs }: DashboardProps) {
   const router = useRouter()
   const { logout } = useAdminAuth()
   const [loading, setLoading] = useState(false)
+  const [statusFilter, setStatusFilter] = useState<'all' | 'confirmed' | 'declined' | 'pending'>('all')
 
   const handleLogout = async () => {
     setLoading(true)
     await logout()
     router.push('/admin')
   }
+
+  const filteredRSVPs = recentRSVPs.filter(rsvp => {
+    if (statusFilter === 'all') return true
+    if (statusFilter === 'confirmed') return rsvp.RSVP === true
+    if (statusFilter === 'declined') return rsvp.RSVP === false
+    if (statusFilter === 'pending') return rsvp.RSVP === null
+    return true
+  })
 
   return (
     <>
@@ -49,27 +58,40 @@ export default function AdminDashboard({ stats, recentRSVPs }: DashboardProps) {
         {/* Navigation */}
         <div className="navbar bg-base-100 shadow-lg">
           <div className="flex-1">
-            <Link href="/admin/dashboard" className="btn btn-ghost normal-case text-xl">
-              Wedding Admin
+            <Link href="/admin/dashboard" className="btn btn-ghost normal-case text-lg sm:text-xl">
+              <span className="hidden sm:inline">Wedding Admin</span>
+              <span className="sm:hidden">Admin</span>
             </Link>
           </div>
           <div className="flex-none">
             <ul className="menu menu-horizontal px-1">
               <li>
-                <Link href="/admin/guests" className="btn btn-ghost">
-                  Manage Guests
+                <Link href="/admin/guests" className="btn btn-ghost btn-sm sm:btn-md">
+                  <span className="hidden sm:inline">Manage Guests</span>
+                  <span className="sm:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                    </svg>
+                  </span>
                 </Link>
               </li>
               <li>
                 <button 
                   onClick={handleLogout}
-                  className="btn btn-ghost"
+                  className="btn btn-ghost btn-sm sm:btn-md"
                   disabled={loading}
                 >
                   {loading ? (
                     <span className="loading loading-spinner loading-sm"></span>
                   ) : (
-                    'Logout'
+                    <>
+                      <span className="hidden sm:inline">Logout</span>
+                      <span className="sm:hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                      </span>
+                    </>
                   )}
                 </button>
               </li>
@@ -78,7 +100,7 @@ export default function AdminDashboard({ stats, recentRSVPs }: DashboardProps) {
         </div>
 
         {/* Main Content */}
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -92,25 +114,45 @@ export default function AdminDashboard({ stats, recentRSVPs }: DashboardProps) {
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-              <div className="stat bg-base-100 rounded-lg shadow">
+              <button 
+                onClick={() => setStatusFilter('all')}
+                className={`stat bg-base-100 rounded-lg shadow transition-all duration-200 hover:shadow-lg ${
+                  statusFilter === 'all' ? 'ring-2 ring-primary bg-primary/5' : 'hover:bg-base-200'
+                }`}
+              >
                 <div className="stat-title">Total Guests</div>
                 <div className="stat-value text-primary">{stats.totalGuests}</div>
-              </div>
+              </button>
               
-              <div className="stat bg-base-100 rounded-lg shadow">
+              <button 
+                onClick={() => setStatusFilter(statusFilter === 'confirmed' ? 'all' : 'confirmed')}
+                className={`stat bg-base-100 rounded-lg shadow transition-all duration-200 hover:shadow-lg ${
+                  statusFilter === 'confirmed' ? 'ring-2 ring-success bg-success/5' : 'hover:bg-base-200'
+                }`}
+              >
                 <div className="stat-title">Confirmed</div>
                 <div className="stat-value text-success">{stats.confirmed}</div>
-              </div>
+              </button>
               
-              <div className="stat bg-base-100 rounded-lg shadow">
+              <button 
+                onClick={() => setStatusFilter(statusFilter === 'declined' ? 'all' : 'declined')}
+                className={`stat bg-base-100 rounded-lg shadow transition-all duration-200 hover:shadow-lg ${
+                  statusFilter === 'declined' ? 'ring-2 ring-error bg-error/5' : 'hover:bg-base-200'
+                }`}
+              >
                 <div className="stat-title">Declined</div>
                 <div className="stat-value text-error">{stats.declined}</div>
-              </div>
+              </button>
               
-              <div className="stat bg-base-100 rounded-lg shadow">
+              <button 
+                onClick={() => setStatusFilter(statusFilter === 'pending' ? 'all' : 'pending')}
+                className={`stat bg-base-100 rounded-lg shadow transition-all duration-200 hover:shadow-lg ${
+                  statusFilter === 'pending' ? 'ring-2 ring-warning bg-warning/5' : 'hover:bg-base-200'
+                }`}
+              >
                 <div className="stat-title">Pending</div>
                 <div className="stat-value text-warning">{stats.pending}</div>
-              </div>
+              </button>
               
               <div className="stat bg-base-100 rounded-lg shadow">
                 <div className="stat-title">Total Attending</div>
@@ -139,8 +181,17 @@ export default function AdminDashboard({ stats, recentRSVPs }: DashboardProps) {
             {/* Recent RSVPs */}
             <div className="card bg-base-100 shadow-xl">
               <div className="card-body">
-                <h2 className="card-title">Recent RSVPs</h2>
-                {recentRSVPs.length > 0 ? (
+                <h2 className="card-title">
+                  Recent RSVPs
+                  {statusFilter !== 'all' && (
+                    <span className="text-sm font-normal text-neutral/70 ml-2">
+                      - {statusFilter === 'confirmed' ? 'Confirmed Only' : 
+                         statusFilter === 'declined' ? 'Declined Only' : 
+                         'Pending Only'}
+                    </span>
+                  )}
+                </h2>
+                {filteredRSVPs.length > 0 ? (
                   <div className="overflow-x-auto">
                     <table className="table table-zebra">
                       <thead>
@@ -152,7 +203,7 @@ export default function AdminDashboard({ stats, recentRSVPs }: DashboardProps) {
                         </tr>
                       </thead>
                       <tbody>
-                        {recentRSVPs.map((rsvp) => (
+                        {filteredRSVPs.map((rsvp) => (
                           <tr key={rsvp.id}>
                             <td className="font-medium">
                               {rsvp.firstName} {rsvp.lastName}
@@ -230,11 +281,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
       return total + 1 + additionalGuests
     }, 0)
 
-    // Get recent RSVPs
+    // Get recent guests (including pending RSVPs)
     const recentRSVPs = await prisma.user.findMany({
-      where: { RSVP: { not: null } },
-      orderBy: { RSVPDate: 'desc' },
-      take: 5,
+      orderBy: { updatedAt: 'desc' },
+      take: 10,
       select: {
         id: true,
         firstName: true,
