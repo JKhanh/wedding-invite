@@ -4,10 +4,15 @@
 import { weddingData } from '@/data/wedding'
 import uiConfig from '@/data/ui'
 
-// Date formatting utilities
-export const getFormattedDate = () => {
+// Date formatting utilities with localization support
+export const getFormattedDate = (language: 'vi' | 'en' = 'vi') => {
   const date = new Date(weddingData.wedding.date)
-  const { locale } = uiConfig.dashboard.dateFormat
+  // Map language codes to locale identifiers
+  const localeMap = {
+    vi: 'vi-VN', // Vietnamese (Vietnam)
+    en: 'en-GB'  // English (UK)
+  }
+  const locale = localeMap[language]
   
   return {
     // Full formatted date
@@ -30,8 +35,8 @@ export const getFormattedDate = () => {
     // Weekday (lowercase)
     weekday: date.toLocaleDateString(locale, { weekday: 'long' }).toLowerCase(),
     
-    // Formatted time
-    time: (parseInt(date.toLocaleTimeString(locale, { hour: 'numeric' })) % 12 || 12) + " " + uiConfig.dashboard.dateFormat.timeFormat,
+    // Formatted time with localization
+    time: (parseInt(date.toLocaleTimeString(locale, { hour: 'numeric' })) % 12 || 12) + " " + (language === 'vi' ? 'giờ' : "o'clock"),
     
     // Timestamp for countdown
     timestamp: date.getTime(),

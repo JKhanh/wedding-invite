@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm list:*)",
+      "Bash(npx ts-node:*)",
+      "Bash(docker:*)",
+      "Bash(ls:*)",
+      "Bash(pnpm install:*)",
+      "Bash(npx prisma migrate:*)",
+      "Bash(node:*)",
+      "Bash(curl:*)",
+      "Bash(grep:*)",
+      "Bash(git add:*)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm dev:*)",
+      "Bash(find:*)",
+      "WebFetch(domain:www.embla-carousel.com)"
+    ],
+    "deny": []
+  }
+}

@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import prisma from "@/prisma";
+import { prisma } from "@/prisma";
 
 export default async function handler(
   req: NextApiRequest,
@@ -25,7 +25,7 @@ export default async function handler(
     });
 
     // Create a regular guest
-    const regularGuest = await prisma.user.create({
+    await prisma.user.create({
       data: {
         firstName: "Test",
         lastName: "Regular",
@@ -37,7 +37,7 @@ export default async function handler(
     });
 
     // Create a dinner guest
-    const dinnerGuest = await prisma.user.create({
+    await prisma.user.create({
       data: {
         firstName: "Test",
         lastName: "Dinner",
@@ -49,7 +49,7 @@ export default async function handler(
     });
 
     // Create a bridal party member (bonus)
-    const bridalPartyMember = await prisma.user.create({
+    await prisma.user.create({
       data: {
         firstName: "Test",
         lastName: "Bridal",

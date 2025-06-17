@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Page Load</title>
+</head>
+<body>
+    <h1>Testing Page Load</h1>
+    <div id="result"></div>
+    <script>
+        fetch('http://localhost:3000/')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('result').innerText = 'Page loaded, length: ' + html.length;
+                console.log('HTML received:', html.substring(0, 500));
+            })
+            .catch(error => {
+                document.getElementById('result').innerText = 'Error: ' + error.message;
+                console.error('Error loading page:', error);
+            });
+    </script>
+</body>
+</html>

@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Korora is a full-stack wedding website built with Next.js (Pages Router), TypeScript, Prisma, and PostgreSQL. It provides guest management, RSVP tracking, gift registry, and interactive features for wedding information.
 
+**Note**: Authentication has been removed from this project. The dashboard is now the homepage and accessible without login.
+
 ## Common Development Commands
 
 ```bash
@@ -59,6 +61,14 @@ npx prisma studio      # Open Prisma Studio GUI
 - Global styles use Tailwind with custom Ogg and Styrene fonts
 - Responsive design with custom breakpoints
 
+### Localization System
+- **IMPORTANT**: This project uses Vietnamese/English bilingual support with Vietnamese as default
+- **Always add translations** when adding new UI text or features
+- Translation files: `/src/locales/vi.ts` (Vietnamese), `/src/locales/en.ts` (English)
+- Use `useLanguage()` hook and `t('key.path')` function for all user-facing text
+- Update both language files when adding new translation keys
+- Test both languages to ensure proper translation coverage
+
 ## Environment Setup
 
 Required environment variables:
@@ -80,4 +90,5 @@ docker-compose up -d  # Starts PostgreSQL container
 - **TailwindCSS + DaisyUI**: Styling
 - **Framer Motion**: Animations
 - **React Hook Form + Zod**: Form handling and validation
-- **Mapbox GL**: Interactive maps
+- **React Leaflet**: OpenStreetMap integration
+- **Leaflet**: Map visualization library

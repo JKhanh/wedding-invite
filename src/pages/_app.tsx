@@ -1,7 +1,6 @@
 import '@/styles/globals.css'
 import localFont from 'next/font/local'
 import type { AppProps } from 'next/app'
-import { SessionProvider } from 'next-auth/react'
 import { LanguageProvider } from '@/contexts/LanguageContext'
 import Head from 'next/head'
 import { Router } from 'next/router'
@@ -115,29 +114,27 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [])
   return (
     <LanguageProvider>
-      <SessionProvider session={pageProps.session}>
-        <main className={`${ogg.variable} ${styreneA.variable} ${styreneB.variable}`}>
-          <Head>
-            <title>Hanh & Khanh</title>
-            <meta name='description' content='Our Wedding' />
-            <meta name='viewport' content='width=device-width, initial-scale=1' />
-            <link rel='apple-touch-icon' sizes='180x180' href='/apple-touch-icon.png' />
-            <link rel='icon' type='image/png' sizes='32x32' href='/favicon-32x32.png' />
-            <link rel='icon' type='image/png' sizes='16x16' href='/favicon-16x16.png' />
-            <link rel='manifest' href='/site.webmanifest' />
-            <link rel='mask-icon' href='/safari-pinned-tab.svg' color='#31553d' />
-            <meta name='msapplication-TileColor' content='#603cba' />
-            <meta name='theme-color' content='#31553d' />
-          </Head>
-          {loading ? (
-            <div className='h-screen w-screen flex items-center justify-center'>
-              <span className='loading loading-infinity loading-lg' />
-            </div>
-          ) : (
-            <Component {...pageProps} />
-          )}
-        </main>
-      </SessionProvider>
+      <main className={`${ogg.variable} ${styreneA.variable} ${styreneB.variable}`}>
+        <Head>
+          <title>Hanh & Khanh</title>
+          <meta name='description' content='Our Wedding' />
+          <meta name='viewport' content='width=device-width, initial-scale=1' />
+          <link rel='apple-touch-icon' sizes='180x180' href='/apple-touch-icon.png' />
+          <link rel='icon' type='image/png' sizes='32x32' href='/favicon-32x32.png' />
+          <link rel='icon' type='image/png' sizes='16x16' href='/favicon-16x16.png' />
+          <link rel='manifest' href='/site.webmanifest' />
+          <link rel='mask-icon' href='/safari-pinned-tab.svg' color='#31553d' />
+          <meta name='msapplication-TileColor' content='#603cba' />
+          <meta name='theme-color' content='#31553d' />
+        </Head>
+        {loading ? (
+          <div className='h-screen w-screen flex items-center justify-center'>
+            <span className='loading loading-infinity loading-lg' />
+          </div>
+        ) : (
+          <Component {...pageProps} />
+        )}
+      </main>
     </LanguageProvider>
   )
 }

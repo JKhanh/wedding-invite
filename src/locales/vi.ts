@@ -138,12 +138,18 @@ export const vi = {
     venue: "Địa điểm",
     location: "Vị trí",
     zoom: "Phóng to",
+    clickForDirections: "Nhấp vào tên địa điểm để mở Google Maps",
   },
 
   // Countdown
   countdown: {
     title: "Đếm ngược",
     until: "đến ngày cưới",
+  },
+
+  // Dashboard
+  dashboard: {
+    guest: "Khách",
   },
 }
 

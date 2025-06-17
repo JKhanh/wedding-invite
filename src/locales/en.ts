@@ -138,12 +138,18 @@ export const en = {
     venue: "Venue",
     location: "Location",
     zoom: "Zoom",
+    clickForDirections: "Click venue name to open in Google Maps",
   },
 
   // Countdown
   countdown: {
     title: "Countdown",
     until: "until the wedding",
+  },
+
+  // Dashboard
+  dashboard: {
+    guest: "Guest",
   },
 }
 

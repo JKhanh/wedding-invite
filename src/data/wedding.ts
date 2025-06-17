@@ -69,10 +69,10 @@ export const weddingData = {
   
   // Location Coordinates (for maps)
   coordinates: {
-    // Main wedding location (Hanoi coordinates)
+    // Main wedding location (ForeverMark Tay Ho - Plus Code: 3RG8+59 Tây Hồ, Hà Nội)
     venue: {
-      latitude: 21.0285,
-      longitude: 105.8542,
+      latitude: 21.075437,
+      longitude: 105.815938,
     },
     
     // Country/region view (Vietnam center)
@@ -81,10 +81,10 @@ export const weddingData = {
       longitude: 108.2772,
     },
     
-    // Map center (Hanoi)
+    // Map center (Tay Ho, Hanoi)
     mapCenter: {
-      latitude: 21.0285,
-      longitude: 105.8542,
+      latitude: 21.125,
+      longitude: 105.815,
     },
   },
   
