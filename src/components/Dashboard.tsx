@@ -34,12 +34,10 @@ declare global {
 }
 
 interface DashboardProps {
-  rsvps: any[]
-  gifts: any[]
   slides: string[]
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ rsvps, slides }) => {
+const Dashboard: React.FC<DashboardProps> = ({ slides }) => {
   const { t, language } = useLanguage()
   
   // Debug: Log slides to console
