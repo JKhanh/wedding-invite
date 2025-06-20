@@ -78,7 +78,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       fs.createReadStream(filePath, { encoding: 'utf8' })
         .pipe(csv({
           // Handle BOM for UTF-8 files and process headers
-          skipLinesWithError: true,
           mapHeaders: ({ header }) => {
             // Remove BOM if present and clean header
             let cleanHeader = header.replace(/^\uFEFF/, '').trim().toLowerCase()

@@ -1,0 +1,11 @@
+firstName,lastName,email,phone,bridalParty,nzInvite,myInvite,tableNumber,notes
+Nguyễn,Văn An,nguyen.van.an@email.com,0123456789,false,false,true,1,Bạn thân cô dâu từ thời đại học
+Trần,Thị Bình,tran.thi.binh@email.com,0987654321,true,false,true,2,Phù dâu - chị gái cô dâu
+Lê,Văn Cường,le.van.cuong@email.com,,false,true,false,3,Anh em chú rể từ Hà Nội
+Phạm,Thị Dung,pham.thi.dung@email.com,0912345678,false,false,true,4,Đồng nghiệp văn phòng
+Hoàng,Minh Đức,hoang.minh.duc@email.com,0345678901,false,false,false,5,Bạn học cấp 3
+Vũ,Thị Hương,vu.thi.huong@email.com,0567890123,true,false,true,6,Phù dâu - em gái cô dâu
+Đỗ,Quang Huy,do.quang.huy@email.com,,false,true,false,7,Bạn thân chú rể
+Bùi,Thị Linh,bui.thi.linh@email.com,0789012345,false,false,true,8,Hàng xóm thân thiết
+Ngô,Văn Nam,ngo.van.nam@email.com,0890123456,false,false,false,9,Đồng môn võ thuật
+Đinh,Thị Oanh,dinh.thi.oanh@email.com,0901234567,false,false,true,10,Chị em thân thiết từ nhỏ
