@@ -2,7 +2,7 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { dashboardText, letter } from '@/utils/motionText'
 import Image from 'next/image'
-// SVG will be referenced as a URL string instead of import
+import Penguins from '../../public/penguins.svg'
 import { useCallback, useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import 'leaflet/dist/leaflet.css'
@@ -41,6 +41,18 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ rsvps, slides }) => {
   const { t, language } = useLanguage()
+  
+  // Debug: Log slides to console
+  useEffect(() => {
+    console.log('=== DASHBOARD CLIENT DEBUG ===')
+    console.log('Slides received in Dashboard:', slides)
+    console.log('Number of slides:', slides?.length || 0)
+    console.log('Slides type:', typeof slides)
+    console.log('Slides is array:', Array.isArray(slides))
+    console.log('First 3 slides:', slides?.slice(0, 3))
+    console.log('===============================')
+  }, [slides])
+  
   const [openTab, setOpenTab] = useState(1)
   const [zoomed, setZoomed] = useState(false)
   const handleZoomToggle = () => {
@@ -167,7 +179,7 @@ const Dashboard: React.FC<DashboardProps> = ({ rsvps, slides }) => {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              <Image className='w-full max-w-[13em]' priority src="/penguins.svg" alt='Penguins' width={208} height={208} />
+              <Image className='w-full max-w-[13em]' priority src={Penguins} alt='Penguins' />
             </motion.div>
             <motion.svg className='max-h-[20em] w-full' viewBox='0 0 2778 1400' xmlns='http://www.w3.org/2000/svg'>
               <motion.path
@@ -463,13 +475,39 @@ const Dashboard: React.FC<DashboardProps> = ({ rsvps, slides }) => {
                 animate={{ opacity: 1, y: 0 }}
                 className='flex flex-col max-w-[700px] w-[85vw] min-w-[296px] min-h-[28.6em] max-h-[450px] bg-base-200 text-accent rounded-2xl xl-shadow'
               >
-                <div className='flex overflow-hidden bg-neutral center-items rounded-2xl' ref={emblaRef}>
-                  <div className='flex'>
-                    {slides.map((image, index) => (
-                      <div className='flex-[0_0_100%]' key={index}>
-                        <Image src={image} className='object-contain w-full h-full' alt={`Photo ${index + 1}`} sizes='85vw' width={800} height={600} />
+                <div className='flex overflow-hidden bg-neutral center-items rounded-2xl h-96' ref={emblaRef}>
+                  <div className='flex h-full'>
+                    {(() => {
+                      console.log('=== CAROUSEL RENDER DEBUG ===')
+                      console.log('slides in render:', slides)
+                      console.log('slides.length:', slides?.length)
+                      console.log('openTab:', openTab)
+                      console.log('============================')
+                      return null
+                    })()}
+                    {slides && slides.length > 0 ? slides.map((image, index) => (
+                      <div className='flex-[0_0_100%] min-w-0 h-full' key={index}>
+                        <Image 
+                          src={image} 
+                          className='object-contain w-full h-full' 
+                          alt={`Photo ${index + 1}`} 
+                          sizes='85vw' 
+                          width={800} 
+                          height={600}
+                          priority={index === 0}
+                          onError={() => {
+                            console.error(`Failed to load image: ${image}`)
+                          }}
+                          onLoad={() => {
+                            console.log(`Successfully loaded image: ${image}`)
+                          }}
+                        />
                       </div>
-                    ))}
+                    )) : (
+                      <div className='flex-[0_0_100%] flex items-center justify-center h-full'>
+                        <p className='text-red-500'>Debug: No images available. Slides: {JSON.stringify(slides)}</p>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <dialog id='modal' className='modal bg-black'>
@@ -478,7 +516,7 @@ const Dashboard: React.FC<DashboardProps> = ({ rsvps, slides }) => {
                       <div className='flex'>
                         {slides.map((image, index) => (
                           <div className='flex-[0_0_100%]' key={index}>
-                            <Image src={image} className='object-contain w-full h-full' alt={`Photo ${index + 1}`} sizes='85vw' width={800} height={600} />
+                            <Image src={image} className='object-contain w-full h-full' alt={`Photo ${index + 1}`} sizes='100vw' width={1200} height={900} />
                           </div>
                         ))}
                       </div>

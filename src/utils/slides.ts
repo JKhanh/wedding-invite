@@ -31,7 +31,16 @@ const imageList = [
 
 // Function to get all image files (works in both dev and production)
 export function getImageFiles() {
-  return imageList.map(filename => `/images/${filename}`)
+  const result = imageList.map(filename => `/images/${filename}`)
+  
+  // Debug logging
+  console.log('=== getImageFiles DEBUG ===')
+  console.log('imageList length:', imageList.length)
+  console.log('result length:', result.length)
+  console.log('First 3 results:', result.slice(0, 3))
+  console.log('==========================')
+  
+  return result
 }
 
 // Default export for client-side (will be overridden by getServerSideProps)
