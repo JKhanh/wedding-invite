@@ -39,18 +39,6 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ slides }) => {
   const { t, language } = useLanguage()
-  
-  // Debug: Log slides to console
-  useEffect(() => {
-    console.log('=== DASHBOARD CLIENT DEBUG ===')
-    console.log('Slides received in Dashboard:', slides)
-    console.log('Number of slides:', slides?.length || 0)
-    console.log('Slides type:', typeof slides)
-    console.log('Slides is array:', Array.isArray(slides))
-    console.log('First 3 slides:', slides?.slice(0, 3))
-    console.log('===============================')
-  }, [slides])
-  
   const [openTab, setOpenTab] = useState(1)
   const [zoomed, setZoomed] = useState(false)
   const handleZoomToggle = () => {
@@ -475,15 +463,7 @@ const Dashboard: React.FC<DashboardProps> = ({ slides }) => {
               >
                 <div className='flex overflow-hidden bg-neutral center-items rounded-2xl h-96' ref={emblaRef}>
                   <div className='flex h-full'>
-                    {(() => {
-                      console.log('=== CAROUSEL RENDER DEBUG ===')
-                      console.log('slides in render:', slides)
-                      console.log('slides.length:', slides?.length)
-                      console.log('openTab:', openTab)
-                      console.log('============================')
-                      return null
-                    })()}
-                    {slides && slides.length > 0 ? slides.map((image, index) => (
+                    {slides.map((image, index) => (
                       <div className='flex-[0_0_100%] min-w-0 h-full' key={index}>
                         <Image 
                           src={image} 
@@ -493,19 +473,9 @@ const Dashboard: React.FC<DashboardProps> = ({ slides }) => {
                           width={800} 
                           height={600}
                           priority={index === 0}
-                          onError={() => {
-                            console.error(`Failed to load image: ${image}`)
-                          }}
-                          onLoad={() => {
-                            console.log(`Successfully loaded image: ${image}`)
-                          }}
                         />
                       </div>
-                    )) : (
-                      <div className='flex-[0_0_100%] flex items-center justify-center h-full'>
-                        <p className='text-red-500'>Debug: No images available. Slides: {JSON.stringify(slides)}</p>
-                      </div>
-                    )}
+                    ))}
                   </div>
                 </div>
                 <dialog id='modal' className='modal bg-black'>
