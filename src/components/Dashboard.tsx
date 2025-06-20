@@ -2,7 +2,7 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { dashboardText, letter } from '@/utils/motionText'
 import Image from 'next/image'
-import Penguins from '../../public/penguins.svg'
+// SVG will be referenced as a URL string instead of import
 import { useCallback, useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import 'leaflet/dist/leaflet.css'
@@ -167,7 +167,7 @@ const Dashboard: React.FC<DashboardProps> = ({ rsvps, slides }) => {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              <Image className='w-full max-w-[13em]' priority src={Penguins} alt='Penguins' />
+              <Image className='w-full max-w-[13em]' priority src="/penguins.svg" alt='Penguins' width={208} height={208} />
             </motion.div>
             <motion.svg className='max-h-[20em] w-full' viewBox='0 0 2778 1400' xmlns='http://www.w3.org/2000/svg'>
               <motion.path

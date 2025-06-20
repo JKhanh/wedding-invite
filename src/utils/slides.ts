@@ -1,31 +1,37 @@
-import fs from 'fs'
-import path from 'path'
+// Hardcoded list of images for production compatibility
+// This avoids file system access which doesn't work reliably on serverless platforms
+const imageList = [
+  'DSC00278.JPG',
+  'DSC00279.JPG',
+  'DSC00280.JPG',
+  'DSC00281.JPG',
+  'DSC00282.JPG',
+  'DSC00283.JPG',
+  'DSC00284.JPG',
+  'DSC00285.JPG',
+  'DSC00286.JPG',
+  'DSC00287.JPG',
+  'DSC00288.JPG',
+  'DSC00289.JPG',
+  'DSC00290.JPG',
+  'DSC00291.JPG',
+  'DSC00292.JPG',
+  'DSC00293.JPG',
+  'DSC00294.JPG',
+  'DSC00295.JPG',
+  'DSC00296.JPG',
+  'DSC00297.JPG',
+  'DSC00298.JPG',
+  'DSC00299.JPG',
+  'DSC00300.JPG',
+  'DSC00301.JPG',
+  'DSC00302.JPG',
+  'DSC00303.JPG'
+]
 
-// Function to get all image files from public/images directory (server-side only)
+// Function to get all image files (works in both dev and production)
 export function getImageFiles() {
-  try {
-    const imagesDirectory = path.join(process.cwd(), 'public', 'images')
-    const filenames = fs.readdirSync(imagesDirectory)
-    
-    // Filter for image files (jpg, jpeg, png, webp, gif)
-    const imageFiles = filenames.filter(name => {
-      const ext = path.extname(name).toLowerCase()
-      return ['.jpg', '.jpeg', '.png', '.webp', '.gif'].includes(ext)
-    })
-    
-    // Sort files naturally (1.jpg, 2.jpg, 10.jpg, etc.)
-    imageFiles.sort((a, b) => {
-      const numA = parseInt(a.match(/\d+/)?.[0] || '999')
-      const numB = parseInt(b.match(/\d+/)?.[0] || '999')
-      return numA - numB || a.localeCompare(b)
-    })
-    
-    return imageFiles.map(filename => `/images/${filename}`)
-  } catch (error) {
-    console.warn('Could not read images directory:', error)
-    // Fallback to numbered files if directory read fails
-    return [1,2,3,4,5,6,7,8,9].map(n => `/images/${n}.jpg`)
-  }
+  return imageList.map(filename => `/images/${filename}`)
 }
 
 // Default export for client-side (will be overridden by getServerSideProps)
