@@ -461,19 +461,11 @@ const Dashboard: React.FC<DashboardProps> = ({ slides }) => {
                 animate={{ opacity: 1, y: 0 }}
                 className='flex flex-col max-w-[700px] w-[85vw] min-w-[296px] min-h-[28.6em] max-h-[450px] bg-base-200 text-accent rounded-2xl xl-shadow'
               >
-                <div className='flex overflow-hidden bg-neutral center-items rounded-2xl h-96' ref={emblaRef}>
-                  <div className='flex h-full'>
+                <div className='flex overflow-hidden bg-neutral center-items rounded-2xl' ref={emblaRef}>
+                  <div className='flex'>
                     {slides.map((image, index) => (
-                      <div className='flex-[0_0_100%] min-w-0 h-full' key={index}>
-                        <Image 
-                          src={image} 
-                          className='object-contain w-full h-full' 
-                          alt={`Photo ${index + 1}`} 
-                          sizes='85vw' 
-                          width={800} 
-                          height={600}
-                          priority={index === 0}
-                        />
+                      <div className='flex-[0_0_100%]' key={index}>
+                        <Image src={image} className='object-contain w-full h-full' alt={`Photo ${index + 1}`} sizes='85vw' width={800} height={600} />
                       </div>
                     ))}
                   </div>
